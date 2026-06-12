@@ -2,8 +2,6 @@ services:
   web:
     image: latitudedata/web:${LAT_IMAGE_TAG:-latest}
     restart: unless-stopped
-    env_file:
-      - .env.production
     ports:
       - "3000:3000"
     depends_on:
@@ -19,8 +17,6 @@ services:
   api:
     image: latitudedata/api:${LAT_IMAGE_TAG:-latest}
     restart: unless-stopped
-    env_file:
-      - .env.production
     ports:
       - "3001:3001"
     depends_on:
@@ -36,8 +32,6 @@ services:
   ingest:
     image: latitudedata/ingest:${LAT_IMAGE_TAG:-latest}
     restart: unless-stopped
-    env_file:
-      - .env.production
     ports:
       - "3002:3002"
     depends_on:
@@ -53,8 +47,6 @@ services:
   workers:
     image: latitudedata/workers:${LAT_IMAGE_TAG:-latest}
     restart: unless-stopped
-    env_file:
-      - .env.production
     depends_on:
       migrations:
         condition: service_completed_successfully
@@ -68,8 +60,6 @@ services:
   workflows:
     image: latitudedata/workflows:${LAT_IMAGE_TAG:-latest}
     restart: unless-stopped
-    env_file:
-      - .env.production
     depends_on:
       migrations:
         condition: service_completed_successfully
@@ -83,8 +73,6 @@ services:
   migrations:
     image: latitudedata/migrations:${LAT_IMAGE_TAG:-latest}
     restart: "no"
-    env_file:
-      - .env.production
     depends_on:
       postgres:
         condition: service_healthy
@@ -94,8 +82,6 @@ services:
   postgres:
     image: pgvector/pgvector:pg16
     restart: unless-stopped
-    env_file:
-      - .env.production
     command: postgres -c wal_level=logical
     ports:
       - "5532:5432"
@@ -112,8 +98,6 @@ services:
   clickhouse:
     image: clickhouse/clickhouse-server:26.2
     restart: unless-stopped
-    env_file:
-      - .env.production
     volumes:
       - clickhouse_data:/var/lib/clickhouse
       - ./docker/clickhouse/storage.xml:/etc/clickhouse-server/config.d/storage.xml:ro
@@ -167,8 +151,6 @@ services:
   seaweedfs:
     image: chrislusf/seaweedfs:4.32
     restart: unless-stopped
-    env_file:
-      - .env.production
     entrypoint: ["/bin/sh", "/init.sh"]
     command: ["server", "-dir=/data", "-s3", "-s3.port=8333"]
     volumes:
